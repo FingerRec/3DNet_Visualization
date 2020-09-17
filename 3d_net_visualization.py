@@ -21,7 +21,7 @@ import argparse
 import numpy as np
 from scipy.ndimage import zoom
 from net.mfnet_3d import MFNET_3D
-from utils import load_images
+from util import load_images
 
 
 def parse_args():

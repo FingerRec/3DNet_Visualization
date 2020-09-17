@@ -1,25 +1,20 @@
-# 3D Net Visualization Tools
+# 3D Net Visualization Tools (PyTorch)
 
 ## Demo
 
-**For an input video, this project will show attention map in video and frames.**
+**This project is to show which space-time region that the model focus on, supported supervised or unsupervised. For an input video, this project will show attention map in video and frames.**
 
 ### saved video
 
 Video can't be show here, there are some gif.
 
-**Video with Clip_step 1**
+**supervised with label**
 
-![gif](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/step_1.gif)
+![gif](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/supervised.gif)
 
-**Video with Clip_step 4**
+**unsupervised**
 
-![gif_2](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/step_4.gif)
-
-
-**Video withClip_step 16**
-
-![gif_3](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/step_16.gif)
+![gif_2](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/unsupervised.gif)
 
 
 ### saved img
@@ -46,6 +41,7 @@ and visualize the heatmap.
 - opencv
 - numpy
 - skvideo
+- ffmpeg
 
 ## Run:
 ### 1.create pretrain_model dir
@@ -62,11 +58,27 @@ which is from [MFNet](https://github.com/cypw/PyTorch-MFNet)
 #### I3d
 [google_drive](https://drive.google.com/open?id=1feHEql9XhoV2pwXb5dTs4TFuaqsa1ajX)
 
+#### R3D 
+
+[To be add]()
+
+#### C3D
+[To be add]()
+
 ### 3.run demo
 
 pretrained I3d on HMDB51
 ```bash
-bash demo.sh
+bash scripts/demo.sh
+```
+#### c3d
+```bash
+bash scripts/c3d_unsupervised_demo.sh
+```
+
+#### r3d
+```bash
+bash scripts/r3d_unsupervised_demo.sh
 ```
 
 The generate video and imgs will be put in dir output/imgs and output/video.
@@ -92,9 +104,19 @@ Tip:UCF101/HMDB51 dataset is support now, for Kinetics et al. Just download a pr
 - [X] support i3d, mpi3d
 - [X] support multi fc layers or full convolution networks
 - [X] support feature map average without label
-- [ ] support s3d, Slow-Fast Net and c3d
+- [X] support r3d and c3d
+- [ ] support Slow-Fast Net
 - [ ] visualize filters
 - [ ] grad-cam
+
+## More information
+
+Support your own network:
+
+> 1. pretrained model; 2. update load_model() in main.py; 3. modify last linear layer name in generate_supervised_cam in action_recognition.py
+
+**Notice C3D and R3D are pretrained on Sports/Kinetics, for better visualization, you may need to finetune these networks on UCF/HMDB**
+
 
 ## Acknowledgment
 This project is highly based on [SaliencyTubes](https://github.com/alexandrosstergiou/Saliency-Tubes-Visual-Explanations-for-Spatio-Temporal-Convolutions) 

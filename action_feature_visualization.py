@@ -13,7 +13,7 @@
 import scipy.io
 import os
 import cv2
-from utils import *
+from util import *
 import numpy as np
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  #close the warning
