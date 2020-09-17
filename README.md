@@ -2,7 +2,9 @@
 
 ## Demo
 
-**This project is to show which space-time region that the model focus on, supported supervised or unsupervised. For an input video, this project will show attention map in video and frames.**
+**This project is to show which space-time region that the model focus on, 
+supported supervised or unsupervised (no label available). For an input video, 
+this project will show attention map in video and frames.**
 
 ### saved video
 
@@ -12,7 +14,7 @@ Video can't be show here, there are some gif.
 
 ![gif](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/supervised.gif)
 
-**unsupervised**
+**unsupervised (only have RGB video)**
 
 ![gif_2](https://github.com/FingerRec/3DNet_Visualization/raw/master/resources/unsupervised.gif)
 
@@ -93,10 +95,15 @@ the details in demo.sh as follow, change --video and --label accorading to your 
 python main.py --num_classes 101 \
 --classes_list resources/classInd.txt \
 --model_weights pretrained_model/MFNet3D_UCF-101_Split-1_96.3.pth \
---video test_videos/v_ApplyEyeMakeup_g01_c01.avi \
+--video test_videos/[your own video here] \
 --frames_num 16 --label 0 --clip_steps 16 \
---output_dir output
+--output_dir output \
+--supervised unsupervised # not annotate this line if no label available
+
 ```
+
+**Notice unsupervised compute only add --supervised unsupervised in script;**
+
 
 Tip:UCF101/HMDB51 dataset is support now, for Kinetics et al. Just download a pretrained model and change --classes_list
 
