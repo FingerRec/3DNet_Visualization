@@ -31,7 +31,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='mfnet-base-parser')
     parser.add_argument("--num_classes", type=int, default=101)
     parser.add_argument("--classes_list", type=str, default='resources/classInd.txt')
-    parser.add_argument("--arch", type=str, default='mf_net', choices=['s3d', 'i3d', 'mf_net', 'c3d', 'mpi3d'])
+    parser.add_argument("--arch", type=str, default='mf_net', choices=['s3d', 'i3d', 'mf_net', 'c3d', 'mpi3d', 'r3d'])
     parser.add_argument("--supervised", type=str, default='fully_supervised',
                         choices=['fully_supervised', 'unsupervised'])
     parser.add_argument("--model_weights", type=str, default='pretrained_model/MFNet3D_UCF-101_Split-1_96.3.pth')
@@ -48,14 +48,66 @@ args = parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus
 
 
-def weight_transform(model_dict, pretrain_dict):
+def weight_transform(model_dict, pretrain_dict, supervised=True):
     '''
 
     :return:
     '''
-    weight_dict = {k:v for k, v in pretrain_dict.items() if k in model_dict}
+    for k, _ in pretrain_dict.items():
+        print("pretrain: {}".format(k))
+    if supervised:
+        weight_dict = {k:v for k, v in pretrain_dict.items() if k in model_dict}
+    else:
+        weight_dict = {k:v for k, v in pretrain_dict.items() if k in model_dict and 'fc' not in k and 'classifier' not in k}
+    for k, _ in weight_dict.items():
+        print("have load: {}".format(k))
     model_dict.update(weight_dict)
     return model_dict
+
+def c3d_weight_transform(model_dict, pretrain_dict, supervised=True):
+    corresp_name = {
+        # Conv1
+        "features.0.weight": "conv1.weight",
+        "features.0.bias": "conv1.bias",
+        # Conv2
+        "features.3.weight": "conv2.weight",
+        "features.3.bias": "conv2.bias",
+        # Conv3a
+        "features.6.weight": "conv3a.weight",
+        "features.6.bias": "conv3a.bias",
+        # Conv3b
+        "features.8.weight": "conv3b.weight",
+        "features.8.bias": "conv3b.bias",
+        # Conv4a
+        "features.11.weight": "conv4a.weight",
+        "features.11.bias": "conv4a.bias",
+        # Conv4b
+        "features.13.weight": "conv4b.weight",
+        "features.13.bias": "conv4b.bias",
+        # Conv5a
+        "features.16.weight": "conv5a.weight",
+        "features.16.bias": "conv5a.bias",
+        # Conv5b
+        "features.18.weight": "conv5b.weight",
+        "features.18.bias": "conv5b.bias",
+        # fc6
+        "classifier.0.weight": "fc6.weight",
+        "classifier.0.bias": "fc6.bias",
+        # fc7
+        "classifier.3.weight": "fc7.weight",
+        "classifier.3.bias": "fc7.bias",
+    }
+
+    p_dict = pretrain_dict
+    s_dict = model_dict
+    for name in p_dict:
+        if name not in corresp_name:
+            continue
+        if 'classifier' in name:
+            continue
+        s_dict[corresp_name[name]] = p_dict[name]
+        print("have load: {}".format(corresp_name[name]))
+    return s_dict
 
 
 def load_model():
@@ -67,20 +119,31 @@ def load_model():
         model_ft = I3D(args.num_classes, modality='rgb', dropout_prob=0)
     elif args.arch == 'r3d':
         model_ft = resnet50(num_classes=args.num_classes)
-    elif args.arch == 'ç3d':
+    elif args.arch == 'c3d':
         model_ft = C3D(with_classifier=True, num_classes=args.num_classes)
     else:
         Exception("Not support network now!")
     if args.model_weights:
         checkpoint = torch.load(args.model_weights)
-        if args.arch == 'mpi3d' or 'i3d':
+        if args.arch in ['mpi3d', 'i3d']:
             base_dict = {'.'.join(k.split('.')[1:]):v for k,v in list(checkpoint['state_dict'].items())}
             #  model_ft.load_state_dict(base_dict)
             model_dict = model_ft.state_dict()
             model_dict = weight_transform(model_dict, base_dict)
             model_ft.load_state_dict(model_dict)
         else:
-            model_ft.load_state_dict(checkpoint['state_dict'])
+            if args.supervised == 'unsupervised':
+                if args.arch == 'c3d':
+                    model_dict = model_ft.state_dict()
+                    model_dict = c3d_weight_transform(model_dict, checkpoint, supervised=False)
+                    model_ft.load_state_dict(model_dict)
+                else:
+                    base_dict = {k : v for k, v in list(checkpoint['state_dict'].items())}
+                    model_dict = model_ft.state_dict()
+                    model_dict = weight_transform(model_dict, base_dict, supervised=False)
+                    model_ft.load_state_dict(model_dict)
+            else:
+                model_ft.load_state_dict(checkpoint['state_dict'])
     else:
         # print("????")
         weights_init(model_ft)

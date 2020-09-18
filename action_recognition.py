@@ -93,11 +93,11 @@ class ActionRecognition(object):
         """
         _, layerout = self.model(torch.tensor(imgs).cuda())  # 1x101
         layerout = torch.tensor(layerout[0].detach().cpu().numpy().transpose(1, 2, 3, 0))  # 8x7x7x1024
-
         cam_list = list()
         cam = np.zeros(dtype=np.float32, shape=layerout.shape[0:3])
+        # print(cam.shape)
         for i in range(layerout.size(3)):
-            cam += layerout[:, :, :, i]  # 8x7x7
+            cam += layerout[:, :, :, i].cpu().numpy()  # 8x7x7
         cam = zoom(cam, (16//layerout.size(0), 224//layerout.size(1), 224//layerout.size(2)), mode='wrap')
         # output map is 8x7x7, so multiply to get to 16x224x224 (original video size)
 

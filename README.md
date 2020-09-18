@@ -62,7 +62,9 @@ which is from [MFNet](https://github.com/cypw/PyTorch-MFNet)
 
 #### R3D 
 
-[To be add]()
+[r3d](https://drive.google.com/file/d/1H52vT1T0sl7iWA7Up8wu1rSMFzgdwGZG/view?usp=sharing)
+
+R3D pretrain model is from [3D-Resnet-Pytorch](https://github.com/kenshohara/3D-ResNets-PyTorch)
 
 #### C3D
 [To be add]()
