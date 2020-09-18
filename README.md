@@ -53,7 +53,8 @@ cd 3DNet_Visualization
 mkdir pretrained_model
 ```
 
-### 2.download pretrained model
+### 2.download pretrained model and put in into the dir pretrained_model
+
 #### MF-Net
 download pretrained MFNet on UCF101 from [google_drive](https://goo.gl/mML2gv) and put it into directory pretrained_model,
 which is from [MFNet](https://github.com/cypw/PyTorch-MFNet)
@@ -67,7 +68,10 @@ which is from [MFNet](https://github.com/cypw/PyTorch-MFNet)
 R3D pretrain model is from [3D-Resnet-Pytorch](https://github.com/kenshohara/3D-ResNets-PyTorch)
 
 #### C3D
-[To be add]()
+
+[C3D](https://drive.google.com/file/d/19NWziHWh1LgCcHU34geoKwYezAogv9fX/view?usp=sharing)
+
+C3D pretrain model is from [C3D-Pytorch](https://github.com/jfzhang95/pytorch-video-recognition)
 
 ### 3.run demo
 
