@@ -128,7 +128,7 @@ Support your own network:
 
 > 1. pretrained model; 2. update load_model() in main.py; 3. modify last linear layer name in generate_supervised_cam in action_recognition.py
 
-**Notice C3D and R3D are pretrained on Sports/Kinetics, for better visualization, you may need to finetune these networks on UCF/HMDB**
+**Notice C3D and R3D are pretrained on Sports/Kinetics, for better visualization, you may need to finetune these networks on UCF/HMDB as in [RHE](https://github.com/FingerRec/RHE)**
 
 
 ## Acknowledgment
